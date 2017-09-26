@@ -13,13 +13,11 @@ main_menu:
     fmt db "%d",10, 0
     
     base_string db "Base:",0
+    town_string db "Town:",0
     
-    base db 0;
-    fleet db 0;
-    town1 db 0;
-    town2 db 0;
-    town3 db 0;
-    town4 db 0;
+    base db 0
+    fleet db 0
+    towns times 8 db 0
 
 
 segment .text
@@ -38,22 +36,49 @@ while:
     call print
 
 
-    mov rax,[base]
+    mov rdi,base_string
+    call print
+
+
+    mov rdi,fmt
+	movzx rsi, byte [base]
+    call print
+
+    mov rcx,0
+
+list_towns:
+
+    cmp rcx,8
+    push rcx
+    je end_towns
+
+    mov rax,[towns]
     cmp rax,0
     jg print_block
     jmp next
 print_block:
-        mov rdi,base_string
+
+        mov rdi,town_string
         call print
+
         mov rdi,fmt
-	    mov rsi,[base]
+        mov rax, towns
+        pop rcx
+        mov rsi, [rax + rcx]
+        push rcx
         call print
 next:
+    pop rcx
+    inc rcx
+    jmp list_towns
+
+end_towns:
 
 	call scan
 	mov r13, rax
 
     inc byte [base]
+    inc byte [towns]
 
     jmp while
 endwhile:
