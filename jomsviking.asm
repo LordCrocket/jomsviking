@@ -10,10 +10,14 @@ main_menu:
 	db	" 2. Transfer troops", 10
 	db	" 0. Quit", 10
 	db	"====================================",10,0
-    fmt db "%d",10, 0
-    fmt2 db "%d", 0
+    fmt db "%u",10, 0
+    town_format db "Town %u: %u",10,0
+
+    line: db	"====================================",10,0
+    choice_string: db	"Choice: ",0
     
     base_string db "Base: ",0
+    fleet_string db "Fleet: ",0
     town_string db "Town ",0
     colon db ": ",0
     
@@ -21,11 +25,17 @@ main_menu:
     fleet db 0
     towns times 8 db 0
 
+    multiplier dq 25214903917
+    increment db 11
 
+section .bss
+	seed 	resq 1
 segment .text
     global  asm_main
 asm_main:
     enter   0,0 
+
+    call init_seed
 
 while:
     cmp r13,0
@@ -41,10 +51,25 @@ while:
     mov rdi,base_string
     call print
 
-
     mov rdi,fmt
 	movzx rsi, byte [base]
     call print
+
+
+    mov rdi,fleet_string
+    call print
+
+    call next_random
+
+    mov rax,[seed]
+    shl rax, 61
+    shr rax, 61
+
+    mov rdi,fmt
+	;movzx rsi, byte [fleet]
+    mov rsi,rax
+    call print
+
 
     mov rcx,0
 
@@ -70,11 +95,18 @@ next:
 
 end_towns:
 
+    mov rdi,line
+    call print
+
+    mov rdi,choice_string
+    call print
+
 	call scan
 	mov r13, rax
 
     inc byte [base]
-    ;inc byte [towns]
+    inc byte [towns]
+    inc byte [towns]
 
     jmp while
 endwhile:
@@ -83,6 +115,51 @@ endwhile:
     leave                     
     ret
 
+;
+;   Generate a seed
+;
+
+init_seed:
+    enter 0,0
+    rdtsc
+    shl rdx,32
+    or rax,rdx
+    mov [seed], rax
+    leave
+    ret
+
+;
+;   Linear congruential generator
+;
+
+next_random:
+    enter 0,0
+
+    ; Multiply last number with multiplier
+    ; The top half of the result can be ignored as
+    ; we will perform a modolus with a number that is
+    ; a power of 2. The left most bits will then just be
+    ; ignored
+    mov rcx, [seed]
+    mov rax, [multiplier]
+    mul rcx
+
+
+    ; Add the increment
+    add rax, [increment]
+    ; Trucate the 12 bits which is equivalent to
+    ; rax % 2^48
+    shl rax, 16
+    shr rax, 16
+
+    ; Use only bits 47..16
+    shr rax, 16
+
+    ; Store the new value
+    mov [seed],rax
+
+    leave
+    ret
 
 ;
 ;   Print towns
@@ -90,25 +167,14 @@ endwhile:
 
 print_town:
     enter   0,0 
-    push rdi
+    mov rcx,rdi
 
-    mov rdi,town_string
-    call print
-
-    pop rcx
-    mov rdi,fmt2
+    mov rdi,town_format
     mov rsi, rcx
     inc rsi
-    push rcx
+    mov rax, towns
+    movzx rdx, byte [rax + rcx]
     call print
 
-    mov rdi,colon
-    call print
-    
-    pop rcx
-    mov rdi,fmt
-    mov rax, towns
-    mov rsi, [rax + rcx]
-    call print
     leave
     ret
