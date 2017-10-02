@@ -1,4 +1,4 @@
-int asm_main( void ) __attribute__((cdecl));
+int asm_main( void ) __attribute__((sysv_abi));
 
 int main()
 {

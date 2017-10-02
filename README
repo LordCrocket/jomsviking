@@ -1,11 +1,3 @@
 JOMSVIKING GAME
 
-Pay the jomsvikings well enough and they will lay waste to your enemies
-be too cheap and they will come for you instead!
-
-
-
-Build:
-gcc -c driver.c
-
-nasm -f elf64 jomsviking.asm && gcc -o jomsviking driver.o jomsviking.o
+Pay the jomsvikings well enough and they will lay waste to your enemies, be too cheap and they will come for you instead!

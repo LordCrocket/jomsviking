@@ -16,13 +16,15 @@ main_menu:
     line: db	"====================================",10,0
     choice_string: db	"Choice: ",0
     
+    gold_string db "Gold: ",0
     base_string db "Base: ",0
     fleet_string db "Fleet: ",0
     town_string db "Town ",0
     colon db ": ",0
     
-    base db 0
-    fleet db 0
+    gold dw 0
+    base db 50
+    fleet db 10
     towns times 8 db 0
 
     multiplier dq 25214903917
@@ -47,6 +49,13 @@ while:
     mov rdi,main_menu
     call print
 
+    mov rdi,gold_string
+    call print
+
+    mov rdi,fmt
+	movzx rsi, word [gold]
+    call print
+
 
     mov rdi,base_string
     call print
@@ -59,15 +68,9 @@ while:
     mov rdi,fleet_string
     call print
 
-    call next_random
-
-    mov rax,[seed]
-    shl rax, 61
-    shr rax, 61
 
     mov rdi,fmt
-	;movzx rsi, byte [fleet]
-    mov rsi,rax
+	movzx rsi, byte [fleet]
     call print
 
 
@@ -79,7 +82,9 @@ list_towns:
     push rcx
     je end_towns
 
-    mov rax,[towns]
+    mov rax, towns
+    movzx rax, byte [rax + rcx]
+
     cmp rax,0
     jg print_block
     jmp next
@@ -104,9 +109,39 @@ end_towns:
 	call scan
 	mov r13, rax
 
-    inc byte [base]
-    inc byte [towns]
-    inc byte [towns]
+
+   ; Calculate new gold
+    xor rdx,rdx
+    movzx rdx, byte [base]
+
+    mov rcx,0
+gold_towns:
+    cmp rcx,8
+    je end_gold
+
+    mov rsi, [fleet]
+    mov rax, towns
+    ;add dx, byte [rax + rcx]
+    ;movzx rdx, byte [rax + rcx]
+    movzx rax, byte [rax + rcx]
+    add dx,ax
+
+    inc rcx
+    jmp gold_towns
+end_gold:
+    add word [gold], dx
+
+
+    ; Find new workers
+    call next_random
+    mov rax,[seed]
+    shl rax, 61
+    shr rax, 61
+
+    mov rcx, towns
+    movzx rdx, byte [fleet]
+    add [rax + rcx], dl
+
 
     jmp while
 endwhile:
@@ -131,6 +166,11 @@ init_seed:
 ;
 ;   Linear congruential generator
 ;
+;   Example usage: random number between 0-7
+;   call next_random
+;   mov rax,[seed]
+;   shl rax, 61
+;   shr rax, 61
 
 next_random:
     enter 0,0
