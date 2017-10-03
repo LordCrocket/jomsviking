@@ -1,5 +1,5 @@
 DEFAULT REL
-%include "common.inc"
+%include "src/common.inc"
 
 
 segment .data
