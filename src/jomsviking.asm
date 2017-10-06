@@ -15,6 +15,11 @@ main_menu:
 
     line: db	"====================================",10,0
     choice_string: db	"Choice: ",0
+
+    jomsviking_string db "Jomsviking strength: ",0
+    attack_string db "Jomsvikings last victim: Town ",0
+
+    work_string db "Added workers to: Town ",0
     
     gold_string db "Gold: ",0
     base_string db "Base: ",0
@@ -22,6 +27,10 @@ main_menu:
     town_string db "Town ",0
     colon db ": ",0
     
+    joms db 50
+    attack db 0
+
+    work dw 0
     gold dw 0
     base db 50
     fleet db 10
@@ -36,17 +45,48 @@ segment .text
     global  asm_main
 asm_main:
     enter   0,0 
+    push r12
 
     call init_seed
 
 while:
-    cmp r13,0
+    cmp r12,0
     je endwhile
 
     mov rdi,clear
     call print
 
     mov rdi,main_menu
+    call print
+
+
+    mov rdi,jomsviking_string
+    call print
+
+    mov rdi,fmt
+	movzx rsi, byte [joms]
+    call print
+
+    mov rdi,attack_string
+    call print
+
+    mov rdi,fmt
+	movzx rsi, byte [attack]
+    call print
+
+    mov rdi,line
+    call print
+
+    mov rdi,work_string
+    call print
+
+    mov rdi,fmt
+	movzx rsi, byte [work]
+    call print
+
+
+
+    mov rdi,line
     call print
 
     mov rdi,gold_string
@@ -107,7 +147,7 @@ end_towns:
     call print
 
 	call scan
-	mov r13, rax
+	mov r12, rax
 
 
    ; Calculate new gold
@@ -121,8 +161,7 @@ gold_towns:
 
     mov rsi, [fleet]
     mov rax, towns
-    ;add dx, byte [rax + rcx]
-    ;movzx rdx, byte [rax + rcx]
+
     movzx rax, byte [rax + rcx]
     add dx,ax
 
@@ -142,6 +181,28 @@ end_gold:
     movzx rdx, byte [fleet]
     add [rax + rcx], dl
 
+    inc rax
+    mov [work], al
+
+    ; Activate jomsviking
+    call next_random
+    mov rax,[seed]
+    shl rax, 61
+    shr rax, 61
+
+    mov rcx, towns
+    
+    movzx rdx, byte [rax + rcx]
+    movzx rsi, byte [joms]
+
+    xor rdi,rdi
+    sub rdx, rsi
+    cmovl rdx, rdi 
+     
+    mov [rax + rcx], dl
+
+    inc rax
+    mov [attack], al
 
     jmp while
 endwhile:
@@ -215,6 +276,10 @@ print_town:
     mov rax, towns
     movzx rdx, byte [rax + rcx]
     call print
+
+
+    pop r13
+    pop r12
 
     leave
     ret
