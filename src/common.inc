@@ -6,7 +6,7 @@ segment .data
     integer1 times 8 db 0 ;
     formatin db "%d", 0
 
-
+segment .text
 
 
 print:
