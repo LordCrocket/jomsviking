@@ -21,8 +21,7 @@ init_seed:
 ;   Example usage: random number between 0-7
 ;   call next_random
 ;   mov rax,[seed]
-;   shl rax, 61
-;   shr rax, 61
+;   and rax, 111b
 
 next_random:
     enter 0,0
@@ -39,7 +38,7 @@ next_random:
 
     ; Add the increment
     add rax, [increment]
-    ; Trucate the 12 bits which is equivalent to
+    ; Trucate the left-most 16 bits which is equivalent to
     ; rax % 2^48
     shl rax, 16
     shr rax, 16
