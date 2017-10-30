@@ -61,7 +61,7 @@ active_jomsviking:
     mov rcx, towns
 
     movzx rdx, byte [rax + rcx]
-    movzx rsi, byte [joms]
+    movzx rsi, byte [game+gs_joms]
 
     xor rdi,rdi
     sub rdx, rsi

@@ -14,7 +14,7 @@ main_menu:
     choice_string: db	"Choice: ",0
 
     jomsviking_string db "Jomsviking strength: ",0
-    attack_string db "Jomsvikings last victim: Town ",0
+    attack_string db "Jomsviking last victim: Town ",0
 
     work_string db "Added workers to: Town ",0
 
@@ -38,7 +38,7 @@ draw_graphics:
     call print
 
     mov rdi,fmt
-	movzx rsi, byte [joms]
+	movzx rsi, byte [game+gs_joms]
     call print
 
     mov rdi,attack_string
@@ -67,7 +67,8 @@ draw_graphics:
     call print
 
     mov rdi,fmt
-	movzx rsi, word [gold]
+    mov rsi, [game+gs_player]
+	movzx rsi, word [rsi+p_gold]
     call print
 
 
@@ -75,7 +76,8 @@ draw_graphics:
     call print
 
     mov rdi,fmt
-	movzx rsi, byte [base]
+    mov rsi, [game+gs_player]
+	movzx rsi, byte [rsi+p_base]
     call print
 
 
@@ -84,7 +86,8 @@ draw_graphics:
 
 
     mov rdi,fmt
-	movzx rsi, byte [fleet]
+    mov rsi, [game+gs_player]
+	movzx rsi, byte [rsi+p_fleet]
     call print
 
     call print_towns
