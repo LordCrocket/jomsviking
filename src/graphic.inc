@@ -38,7 +38,7 @@ draw_graphics:
     call print
 
     mov rdi,fmt
-	movzx rsi, byte [game+gs_joms]
+	movzx rsi, word [game+gs_joms]
     call print
 
     mov rdi,attack_string
@@ -77,7 +77,7 @@ draw_graphics:
 
     mov rdi,fmt
     mov rsi, [game+gs_player]
-	movzx rsi, byte [rsi+p_base]
+	movzx rsi, word [rsi+p_base]
     call print
 
 
@@ -87,7 +87,7 @@ draw_graphics:
 
     mov rdi,fmt
     mov rsi, [game+gs_player]
-	movzx rsi, byte [rsi+p_fleet]
+	movzx rsi, word [rsi+p_fleet]
     call print
 
     call print_towns

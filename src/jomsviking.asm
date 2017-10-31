@@ -4,30 +4,31 @@ DEFAULT REL
 %include "src/logic.inc"
 %include "src/graphic.inc"
 
-segment .data
-
+segment .bss
     struc   game_state
-        gs_joms:    resb 1
-        gs_j_gold:  resb 1
         gs_player:  resq 1
+        gs_joms:    resw 1
+        gs_j_gold:  resw 1
+        alignb 8
     endstruc
 
     struc   player_state
         p_gold:  resw 1
-        p_base:  resb 1
-        p_fleet: resb 1
+        p_base:  resw 1
+        p_fleet: resw 1
     endstruc
 
+segment .data
     game: istruc game_state
-        at gs_joms, db  50
-        at gs_j_gold, db  50
         at gs_player, dq  0
+        at gs_joms, dw  50
+        at gs_j_gold, dw  50
     iend
 
     player: istruc player_state
         at p_gold, dw  0
-        at p_base, db  50
-        at p_fleet, db  10
+        at p_base, dw  50
+        at p_fleet, dw  10
     iend
 
     work dw 0
@@ -57,6 +58,7 @@ while:
     je endwhile
 
     call draw_graphics
+
 
 	call scan
 	mov [rsp], rax

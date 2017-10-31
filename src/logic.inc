@@ -9,7 +9,7 @@ generate_gold:
 
     enter   0,0 
 
-    movzx rax, byte [rdi]
+    movzx rax, word [rdi]
 
     mov rcx,7
 .loop:
@@ -38,7 +38,7 @@ find_workers:
     and rax, 111b
 
     mov rcx, rdi
-    movzx rdx, byte [rsi]
+    movzx rdx, word [rsi]
     add [rax + rcx], dl
 
 
