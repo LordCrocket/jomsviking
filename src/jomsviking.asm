@@ -4,6 +4,8 @@ DEFAULT REL
 %include "src/logic.inc"
 %include "src/graphic.inc"
 
+extern malloc
+
 segment .bss
     struc   game_state
         gs_player:  resq 1
@@ -25,12 +27,6 @@ segment .data
         at gs_j_gold, dw  50
     iend
 
-    player: istruc player_state
-        at p_gold, dw  0
-        at p_base, dw  50
-        at p_fleet, dw  10
-    iend
-
     work dw 0
     attack db 0
 
@@ -46,8 +42,14 @@ asm_main:
 
     mov qword [rsp],2
 
-    ; Link player to gamestate
-    lea rax ,[player]
+    ; Init player and link to gamestate
+    mov rdi, player_state_size
+    call malloc wrt ..plt
+
+    mov [rax+p_gold],word 0
+    mov [rax+p_base],word 50
+    mov [rax+p_fleet],word 10
+
     mov [game+gs_player], rax
 
 
