@@ -10,15 +10,15 @@ generate_gold:
     enter   0,0 
 
     movzx rax, word [rdi]
-
-    mov rcx,7
 .loop:
+    cmp rsi,0
+    je .end
 
-    add al, byte [rsi + rcx]
+    add rax,[rsi+n_value]
+    mov rsi,[rsi+n_next]
+    jmp .loop
 
-    dec rcx
-    jnz .loop 
-
+.end:
     add [rdx], ax
     leave
     ret
@@ -36,11 +36,20 @@ find_workers:
     mov rax,[seed]
     ; mod 8
     and rax, 111b
-
-    mov rcx, rdi
+    xor rcx,rcx 
+    ; Find town
+.loop:
+    cmp rax,rcx 
+    je .end
+  
+    inc rcx 
+    mov rdi,[rdi+n_next]
+      
+    jmp .loop
+.end: 
+    ; Add value
     movzx rdx, word [rsi]
-    add [rax + rcx], dl
-
+    add [rdi+n_value], dl
 
     leave
     ret
@@ -57,17 +66,25 @@ active_jomsviking:
     mov rax,[seed]
     ; mod 8
     and rax, 111b
+    xor rcx,rcx
+.loop:
+    cmp rax,rcx 
+    je .end
+  
+    inc rcx 
+    mov rdi,[rdi+n_next]
+      
+    jmp .loop
+.end:
 
-    mov rcx, towns
+    mov rdx, [rdi+n_value] 
+    movzx rsi, word [rsi]
 
-    movzx rdx, byte [rax + rcx]
-    movzx rsi, byte [game+gs_joms]
-
-    xor rdi,rdi
+    xor rcx,rcx
     sub rdx, rsi
-    cmovl rdx, rdi
+    cmovl rdx, rcx
 
-    mov [rax + rcx], dl
+    mov [rdi+n_value], dl
 
     leave
     ret

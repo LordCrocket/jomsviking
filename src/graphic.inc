@@ -127,47 +127,40 @@ print_clear:
 
 print_towns:
     enter   16,0
-    .i  equ  0
+    .rbx equ 0
+    .number    equ 8
 
-    mov rcx,0
+    ; Save rbx
+    mov [rsp+.rbx], rbx
 
-list_towns:
+    mov rbx, [towns]
+    mov qword [rsp+.number], 1
 
-    cmp rcx,8
-    push rcx
-    je end_towns
+.list_towns:
+    cmp rbx,0
 
-    mov rax, towns
-    movzx rax, byte [rax + rcx]
+    je .end_towns
+
+    mov rax, [rbx+n_value]
 
     cmp rax,0
-    jg print_block
-    jmp next
-print_block:
-    pop rcx
-    mov rdi, rcx
-    push rcx
-    call print_town
-next:
-    pop rcx
-    inc rcx
-    jmp list_towns
-
-end_towns:
-    leave
-    ret
-
-print_town:
-    enter   0,0
-    mov rcx,rdi
+    je .next
+    ; Print
 
     mov rdi,town_format
-    mov rsi, rcx
-    inc rsi
-    mov rax, towns
-    movzx rdx, byte [rax + rcx]
+    mov rsi, [rsp+.number]
+
+    mov rdx, rax 
     call print
 
+.next:
+    inc qword [rsp+8]
 
+    mov rbx, [rbx+n_next]
+
+    jmp .list_towns
+
+.end_towns:
+    mov rbx,[rsp+.rbx]
     leave
     ret

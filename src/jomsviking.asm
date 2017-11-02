@@ -3,6 +3,7 @@ DEFAULT REL
 %include "src/random.inc"
 %include "src/logic.inc"
 %include "src/graphic.inc"
+%include "src/data-structs.inc"
 
 extern malloc
 
@@ -30,7 +31,7 @@ segment .data
     work dw 0
     attack db 0
 
-    towns times 8 db 0
+    towns dq 0
 
     multiplier dq 25214903917
     increment db 11
@@ -52,6 +53,21 @@ asm_main:
 
     mov [game+gs_player], rax
 
+    ; Init towns
+    push rbx
+
+    xor rax,rax
+    mov rbx, 8
+.loop:
+    mov rdi,rax
+    xor rsi, rsi
+    call push
+    dec rbx
+    jnz .loop
+
+    mov [towns], rax
+
+    pop rbx
 
     call init_seed
 
@@ -69,7 +85,7 @@ while:
    ; Calculate new gold
     mov rax, [game+gs_player]
     lea rdi, [rax+p_base]
-    mov rsi, towns
+    mov rsi, [towns]
     lea rdx, [rax+p_gold]
     call generate_gold
 
@@ -77,7 +93,7 @@ while:
     ; Find new workers
 
     mov rax, [game+gs_player]
-    mov rdi, towns
+    mov rdi, [towns]
     lea rsi, [rax+p_fleet]
     call find_workers
 
@@ -86,7 +102,7 @@ while:
     mov [work], al
 
     ; Activate jomsviking
-    mov rdi, towns
+    mov rdi, [towns]
     lea rsi, [game+gs_joms]
     call active_jomsviking
 
