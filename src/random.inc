@@ -1,5 +1,8 @@
 segment .bss
 	seed 	resq 1
+segment .data
+    multiplier dq 25214903917
+    increment db 11
 segment .text
 
 ;

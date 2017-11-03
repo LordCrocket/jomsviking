@@ -16,9 +16,11 @@ segment .bss
     endstruc
 
     struc   player_state
+        p_towns:   resq 1
         p_gold:  resw 1
         p_base:  resw 1
         p_fleet: resw 1
+        alignb 8
     endstruc
 
 segment .data
@@ -31,10 +33,7 @@ segment .data
     work dw 0
     attack db 0
 
-    towns dq 0
 
-    multiplier dq 25214903917
-    increment db 11
 
 segment .text
     global  asm_main
@@ -42,16 +41,6 @@ asm_main:
     enter   16,0 ; Make room for local loop variable
 
     mov qword [rsp],2
-
-    ; Init player and link to gamestate
-    mov rdi, player_state_size
-    call malloc wrt ..plt
-
-    mov [rax+p_gold],word 0
-    mov [rax+p_base],word 50
-    mov [rax+p_fleet],word 10
-
-    mov [game+gs_player], rax
 
     ; Init towns
     push rbx
@@ -65,7 +54,18 @@ asm_main:
     dec rbx
     jnz .loop
 
-    mov [towns], rax
+    mov rbx,rax
+
+    ; Init player and link to gamestate
+    mov rdi, player_state_size
+    call malloc wrt ..plt
+
+    mov [rax+p_towns],rbx
+    mov [rax+p_gold],word 0
+    mov [rax+p_base],word 50
+    mov [rax+p_fleet],word 10
+
+    mov [game+gs_player], rax
 
     pop rbx
 
@@ -85,7 +85,7 @@ while:
    ; Calculate new gold
     mov rax, [game+gs_player]
     lea rdi, [rax+p_base]
-    mov rsi, [towns]
+    mov rsi, [rax+p_towns]
     lea rdx, [rax+p_gold]
     call generate_gold
 
@@ -93,7 +93,7 @@ while:
     ; Find new workers
 
     mov rax, [game+gs_player]
-    mov rdi, [towns]
+    mov rdi, [rax+p_towns]
     lea rsi, [rax+p_fleet]
     call find_workers
 
@@ -102,7 +102,8 @@ while:
     mov [work], al
 
     ; Activate jomsviking
-    mov rdi, [towns]
+    mov rax, [game+gs_player]
+    mov rdi, [rax+p_towns]
     lea rsi, [game+gs_joms]
     call active_jomsviking
 

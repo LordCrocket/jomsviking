@@ -90,6 +90,7 @@ draw_graphics:
 	movzx rsi, word [rsi+p_fleet]
     call print
 
+    mov rdi, [game+gs_player]
     call print_towns
 
     mov rdi,line
@@ -133,7 +134,7 @@ print_towns:
     ; Save rbx
     mov [rsp+.rbx], rbx
 
-    mov rbx, [towns]
+    mov rbx, [rdi+p_towns]
     mov qword [rsp+.number], 1
 
 .list_towns:
