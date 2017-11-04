@@ -30,14 +30,19 @@ generate_gold:
 ; rsi: Address to fleet
 ;
 find_workers:
-    enter   0,0
+    enter   16,0
+    .towns equ 0
 
+    mov [rsp+.towns],rdi
+
+    mov rdi,8
     call next_random
-    mov rax,[seed]
-    ; mod 8
-    and rax, 111b
-    xor rcx,rcx 
+
+
+    mov rdi,[rsp+.towns]
+
     ; Find town
+    xor rcx,rcx
 .loop:
     cmp rax,rcx 
     je .end
@@ -60,12 +65,18 @@ find_workers:
 ; rsi: Address to joms
 ;
 active_jomsviking:
-    enter   0,0
+    enter   16,0
 
+    .towns equ 0
+
+    mov [rsp+.towns],rdi
+
+    mov rdi,8
     call next_random
-    mov rax,[seed]
-    ; mod 8
-    and rax, 111b
+
+
+    mov rdi,[rsp+.towns]
+
     xor rcx,rcx
 .loop:
     cmp rax,rcx 

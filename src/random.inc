@@ -21,10 +21,9 @@ init_seed:
 ;
 ;   Linear congruential generator
 ;
-;   Example usage: random number between 0-7
-;   call next_random
-;   mov rax,[seed]
-;   and rax, 111b
+;   rdi: Size of range
+;
+;   rax: Random number between 0-(rdi-1)
 
 next_random:
     enter 0,0
@@ -51,6 +50,10 @@ next_random:
 
     ; Store the new value
     mov [seed],rax
+
+    xor rdx,rdx
+    div rdi
+    mov rax, rdx
 
     leave
     ret
