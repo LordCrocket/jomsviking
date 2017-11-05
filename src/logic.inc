@@ -30,31 +30,32 @@ generate_gold:
 ; rsi: Address to fleet
 ;
 find_workers:
-    enter   16,0
+    enter   36,0
     .towns equ 0
+    .fleet equ 8
+    .number equ 16
 
     mov [rsp+.towns],rdi
+    mov [rsp+.fleet],rsi
 
     mov rdi,8
     call next_random
 
+    mov [rsp+.number],rax
 
+    ; Get town
     mov rdi,[rsp+.towns]
+    mov rsi, rax
 
-    ; Find town
-    xor rcx,rcx
-.loop:
-    cmp rax,rcx 
-    je .end
-  
-    inc rcx 
-    mov rdi,[rdi+n_next]
-      
-    jmp .loop
-.end: 
+    call get
+
+    mov rsi,[rsp+.fleet]
+
     ; Add value
     movzx rdx, word [rsi]
-    add [rdi+n_value], dl
+    add [rax], dl
+
+    mov rax,[rsp+.number]
 
     leave
     ret
@@ -65,37 +66,37 @@ find_workers:
 ; rsi: Address to joms
 ;
 active_jomsviking:
-    enter   16,0
+    enter   32,0
 
     .towns equ 0
+    .joms equ 8
+    .number equ 16
 
     mov [rsp+.towns],rdi
+    mov [rsp+.joms],rsi
 
     mov rdi,8
     call next_random
+    mov [rsp+.number],rax
 
 
+    ; Get town
     mov rdi,[rsp+.towns]
+    mov rsi, rax
 
-    xor rcx,rcx
-.loop:
-    cmp rax,rcx 
-    je .end
-  
-    inc rcx 
-    mov rdi,[rdi+n_next]
-      
-    jmp .loop
-.end:
+    call get
 
-    mov rdx, [rdi+n_value] 
+    mov rsi,[rsp+.joms]
+    mov rdx, [rax]
     movzx rsi, word [rsi]
 
     xor rcx,rcx
     sub rdx, rsi
     cmovl rdx, rcx
 
-    mov [rdi+n_value], dl
+    mov [rax], dl
+
+    mov rax,[rsp+.number]
 
     leave
     ret

@@ -33,3 +33,27 @@ push:
 
     leave
     ret
+
+; get(index)
+; rdi: List
+; rsi: Index
+;
+; rax: Pointer to value at index
+get:
+    enter 0,0
+
+    xor rcx,rcx
+.loop:
+    cmp rax,rcx
+    je .end
+
+    mov rdi,[rdi+n_next]
+    inc rcx
+
+    jmp .loop
+.end:
+
+    lea rax,[rdi+n_value]
+
+    leave
+    ret
