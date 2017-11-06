@@ -13,7 +13,10 @@ main_menu:
     line: db	"====================================",10,0
     choice_string: db	"Choice: ",0
 
+    bribe_string: db	"How much to bribe: ",0
+
     jomsviking_string db "Jomsviking strength: ",0
+    joms_gold_string db "Jomsviking gold: ",0
     attack_string db "Jomsviking last victim: Town ",0
 
     work_string db "Added workers to: Town ",0
@@ -37,8 +40,17 @@ draw_graphics:
     mov rdi,jomsviking_string
     call print
 
+
+
     mov rdi,fmt
 	movzx rsi, word [game+gs_joms]
+    call print
+
+    mov rdi,joms_gold_string
+    call print
+
+    mov rdi,fmt
+	movzx rsi, word [game+gs_j_gold]
     call print
 
     mov rdi,attack_string
@@ -113,6 +125,16 @@ print_menu:
 
     leave
     ret
+
+print_bribe:
+    enter   0,0
+
+    mov rdi,bribe_string
+    call print
+
+    leave
+    ret
+
 print_clear:
     enter   0,0
 

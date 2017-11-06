@@ -27,7 +27,7 @@ segment .data
     game: istruc game_state
         at gs_player, dq  0
         at gs_joms, dw  50
-        at gs_j_gold, dw  50
+        at gs_j_gold, dw  0
     iend
 
     work dw 0
@@ -81,7 +81,27 @@ while:
 	call scan
 	mov [rsp], rax
 
+    cmp rax, 1
+    jne .end
 
+    call print_bribe
+	call scan
+
+
+    mov rsi,[game+gs_player]
+    movzx rdx,word [rsi+p_gold]
+    mov rdi,rdx
+
+    xor rcx,rcx
+    sub rdx, rax
+
+    cmovl rax, rdi
+    cmovl rdx, rcx
+
+    mov [rsi+p_gold],dl
+    add [game+gs_j_gold], ax
+
+.end:
    ; Calculate new gold
     mov rax, [game+gs_player]
     lea rdi, [rax+p_base]
