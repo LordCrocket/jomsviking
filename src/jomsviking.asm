@@ -98,7 +98,7 @@ while:
     cmovl rax, rdi
     cmovl rdx, rcx
 
-    mov [rsi+p_gold],dl
+    mov [rsi+p_gold],dx
     add [game+gs_j_gold], ax
 
 .end:
