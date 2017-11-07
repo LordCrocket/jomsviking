@@ -46,7 +46,7 @@ asm_main:
     push rbx
 
     xor rax,rax
-    mov rbx, 8
+    mov rbx, 13
 .loop:
     mov rdi,rax
     xor rsi, rsi

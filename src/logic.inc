@@ -38,7 +38,9 @@ find_workers:
     mov [rsp+.towns],rdi
     mov [rsp+.fleet],rsi
 
-    mov rdi,8
+    call size
+
+    mov rdi,rax
     call next_random
 
     mov [rsp+.number],rax
@@ -75,7 +77,9 @@ active_jomsviking:
     mov [rsp+.towns],rdi
     mov [rsp+.joms],rsi
 
-    mov rdi,8
+    call size
+
+    mov rdi,rax
     call next_random
     mov [rsp+.number],rax
 

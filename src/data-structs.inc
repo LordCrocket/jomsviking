@@ -57,3 +57,23 @@ get:
 
     leave
     ret
+
+; Size
+; rdi: List
+;
+; rax: Size of list
+size:
+    enter 0,0
+
+    xor rax,rax
+
+.loop:
+    cmp rdi, 0
+    je .end
+    mov rdi,[rdi+n_next]
+    inc rax
+    jmp .loop
+.end:
+
+    leave
+    ret
