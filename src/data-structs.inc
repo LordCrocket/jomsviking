@@ -3,6 +3,11 @@ struc node
     n_next:  resq 1
 endstruc
 
+
+new_list:
+    xor rax,rax
+    ret
+
 ; Adds new node to list
 ; rdi: Address to list
 ; rsi: Value to add

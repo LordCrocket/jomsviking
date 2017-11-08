@@ -39,21 +39,17 @@ segment .text
     global  asm_main
 asm_main:
     enter   16,0 ; Make room for local loop variable
+    .choice equ 0
+    .rbx equ 8
 
     mov qword [rsp],2
+    mov qword [rsp+8],2
 
-    ; Init towns
-    push rbx
 
-    xor rax,rax
-    mov rbx, 13
-.loop:
-    mov rdi,rax
-    xor rsi, rsi
-    call push
-    dec rbx
-    jnz .loop
+    ; Save rbx
+    mov [rsp+.rbx],rbx
 
+    call new_list
     mov rbx,rax
 
     ; Init player and link to gamestate
@@ -66,8 +62,9 @@ asm_main:
     mov [rax+p_fleet],word 10
 
     mov [game+gs_player], rax
-
-    pop rbx
+    
+    ; Restore rbx
+    mov [rsp+.rbx],rbx
 
     call init_seed
 
@@ -112,9 +109,7 @@ while:
 
     ; Find new workers
 
-    mov rax, [game+gs_player]
-    mov rdi, [rax+p_towns]
-    lea rsi, [rax+p_fleet]
+    mov rdi, [game+gs_player]
     call find_workers
 
     ; Save info to display

@@ -26,38 +26,31 @@ generate_gold:
 ; 
 ; Find new workers
 ;
-; rdi: Address to towns
-; rsi: Address to fleet
+; rdi: Address to player
 ;
 find_workers:
-    enter   36,0
-    .towns equ 0
-    .fleet equ 8
-    .number equ 16
+    enter   16,0
+    .player equ 0
 
-    mov [rsp+.towns],rdi
-    mov [rsp+.fleet],rsi
+    mov [rsp+.player],rdi
 
+
+    ;lea rdi, [rax+p_towns]
+    ;lea rsi, [rdi+p_fleet]
+    ;xor rsi,rsi
+    ; Add value
+    movzx rsi, word [rdi+p_fleet]
+    mov rdi, [rdi+p_towns]
+
+    call push
+
+    mov rdi,[rsp+.player]
+    mov [rdi+p_towns],rax
+
+    mov rdi,rax 
     call size
 
-    mov rdi,rax
-    call next_random
-
-    mov [rsp+.number],rax
-
-    ; Get town
-    mov rdi,[rsp+.towns]
-    mov rsi, rax
-
-    call get
-
-    mov rsi,[rsp+.fleet]
-
-    ; Add value
-    movzx rdx, word [rsi]
-    add [rax], dl
-
-    mov rax,[rsp+.number]
+    dec rax
 
     leave
     ret
