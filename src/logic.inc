@@ -47,10 +47,7 @@ find_workers:
     mov rdi,[rsp+.player]
     mov [rdi+p_towns],rax
 
-    mov rdi,rax 
-    call size
-
-    dec rax
+    mov rax,0
 
     leave
     ret
@@ -70,6 +67,8 @@ active_jomsviking:
     mov [rsp+.towns],rdi
     mov [rsp+.joms],rsi
 
+    mov rdi,[rdi]
+
     call size
 
     mov rdi,rax
@@ -79,20 +78,29 @@ active_jomsviking:
 
     ; Get town
     mov rdi,[rsp+.towns]
+    mov rdi,[rdi]
     mov rsi, rax
 
     call get
 
     mov rsi,[rsp+.joms]
-    mov rdx, [rax]
+    mov rdx, [rax+n_value]
     movzx rsi, word [rsi]
 
-    xor rcx,rcx
+
     sub rdx, rsi
-    cmovl rdx, rcx
+    cmp rdx,0
+    jle .remove
 
     mov [rax], dl
+    jmp .end
 
+.remove:
+    mov rdi,[rsp+.towns]
+    mov rsi,[rsp+.number]
+    call remove
+
+.end:
     mov rax,[rsp+.number]
 
     leave

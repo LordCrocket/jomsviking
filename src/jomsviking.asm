@@ -6,6 +6,7 @@ DEFAULT REL
 %include "src/data-structs.inc"
 
 extern malloc
+extern free
 
 segment .bss
     struc   game_state
@@ -26,7 +27,7 @@ segment .bss
 segment .data
     game: istruc game_state
         at gs_player, dq  0
-        at gs_joms, dw  50
+        at gs_joms, dw  5
         at gs_j_gold, dw  0
     iend
 
@@ -118,7 +119,7 @@ while:
 
     ; Activate jomsviking
     mov rax, [game+gs_player]
-    mov rdi, [rax+p_towns]
+    lea rdi, [rax+p_towns]
     lea rsi, [game+gs_joms]
     call active_jomsviking
 

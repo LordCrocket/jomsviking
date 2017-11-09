@@ -39,6 +39,36 @@ push:
     leave
     ret
 
+; remove(index)
+; rdi: List
+; rsi: Index
+;
+remove:
+    enter 0,0
+
+.loop:
+    ; Get node
+    mov rcx,[rdi]
+
+    dec rsi
+    cmp rsi,0
+    jl .end
+
+    lea rdi,[rcx+n_next]
+    jmp .loop
+.end:
+    ; Set to point to next
+    mov rdx,[rcx+n_next]
+    mov [rdi],rdx
+    ; Remove current
+    mov rdi,rcx
+    call free wrt ..plt
+
+    leave
+    ret
+
+
+
 ; get(index)
 ; rdi: List
 ; rsi: Index
