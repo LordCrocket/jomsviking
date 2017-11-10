@@ -56,6 +56,7 @@ find_workers:
 ;
 ; rdi: Address to towns
 ; rsi: Address to joms
+; rdx: Address to joms gold
 ;
 active_jomsviking:
     enter   32,0
@@ -66,6 +67,14 @@ active_jomsviking:
 
     mov [rsp+.towns],rdi
     mov [rsp+.joms],rsi
+
+    ; Buy soldiers with gold
+
+    movzx rcx, word [rdx]
+    add [rsi],rcx
+    mov [rdx], word 0
+
+    ; Attack towns
 
     mov rdi,[rdi]
 

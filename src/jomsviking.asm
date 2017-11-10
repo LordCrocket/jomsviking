@@ -121,6 +121,7 @@ while:
     mov rax, [game+gs_player]
     lea rdi, [rax+p_towns]
     lea rsi, [game+gs_joms]
+    lea rdx, [game+gs_j_gold]
     call active_jomsviking
 
     ; Save info to display
