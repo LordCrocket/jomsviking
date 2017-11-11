@@ -79,7 +79,7 @@ get:
 
     xor rcx,rcx
 .loop:
-    cmp rax,rcx
+    cmp rsi,rcx
     je .end
 
     mov rdi,[rdi+n_next]
