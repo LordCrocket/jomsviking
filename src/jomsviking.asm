@@ -80,8 +80,15 @@ while:
 	mov [rsp], rax
 
     cmp rax, 1
-    jne .end
+    je .bribe
 
+
+    cmp rax, 2
+    je .transfer
+
+    jmp .end
+
+.bribe:
     call print_bribe
 	call scan
 
@@ -98,7 +105,52 @@ while:
 
     mov [rsi+p_gold],dx
     add [game+gs_j_gold], ax
+    jmp .end
 
+.transfer:
+    mov [rsp+asm_main.rbx],rbx
+
+    mov rax, [game+gs_player]
+    mov rdi, [rax+p_towns]
+    call size
+
+    cmp rax,0
+    je .end
+
+    mov rbx,rax
+.loop:
+    call print_transfer
+	call scan
+
+    cmp rax,1
+    jl .loop
+
+    cmp rax,rbx
+    jg .loop
+
+    dec rax
+
+    mov rsi,rax
+
+    mov rax, [game+gs_player]
+
+    movzx rdx, word [rax+p_base]
+    mov rdi, [rax+p_towns]
+
+    xor rcx,rcx
+    mov rbx,10
+    sub rdx,10
+
+    cmovl rdx,rcx
+    cmovl rbx,rcx
+
+    mov word [rax+p_base],dx
+
+
+    call get
+    add [rax+n_value],rbx
+
+    mov rbx,[rsp+asm_main.rbx]
 .end:
    ; Calculate new gold
     mov rax, [game+gs_player]

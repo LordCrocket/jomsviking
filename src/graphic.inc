@@ -15,6 +15,8 @@ main_menu:
 
     bribe_string: db	"How much to bribe: ",0
 
+    transfer_string: db	"Where to transfer: ",0
+
     jomsviking_string db "Jomsviking strength: ",0
     joms_gold_string db "Jomsviking gold: ",0
     attack_string db "Jomsviking last victim: Town ",0
@@ -130,6 +132,15 @@ print_bribe:
     enter   0,0
 
     mov rdi,bribe_string
+    call print
+
+    leave
+    ret
+
+print_transfer:
+    enter   0,0
+
+    mov rdi,transfer_string
     call print
 
     leave
